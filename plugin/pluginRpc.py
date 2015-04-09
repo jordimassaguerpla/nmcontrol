@@ -131,7 +131,7 @@ class rpcClientThread(threading.Thread):
 
         if plugin not in app['plugins']:
             return (True, 'Plugin "' + plugin + '" not allowed')
-        if not app['plugins'][plugin].running and params[0] != 'start':
+        if not app['plugins'][plugin].running and len(params) and params[0] != 'start':
             return (True, 'Plugin "' + plugin + '" not started')
 
         if method == 'start': method = 'start2'
@@ -169,7 +169,7 @@ class rpcClientThread(threading.Thread):
 
         try:
             methodRpc = getattr(app['plugins'][plugin], '_rpc')
-            result = methodRpc(method, *params)
+            result = methodRpc(method, *params, **{"api_user":"admin"})
         except AttributeError, e:
             if app['debug']: traceback.print_exc()
             return (True, 'Method "' + method + '" not supported by plugin "' + plugin + '"')
