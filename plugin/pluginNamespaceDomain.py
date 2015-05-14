@@ -1,6 +1,6 @@
 from common import *
 import plugin
-import DNS
+#import DNS # PyDNS is being removed
 import json, base64, types, random, traceback
 
 class pluginNamespaceDomain(plugin.PluginThread):
@@ -190,6 +190,7 @@ class pluginNamespaceDomain(plugin.PluginThread):
     def namespaceToDomain(self, name):
         pass
  
+    # This is a remnant of PyDNS/PyMDS, and will be removed soon
     def lookup(self, qdict) :
         #dns = app['services']['dns'].lookup()
         # 
@@ -237,6 +238,7 @@ class pluginNamespaceDomain(plugin.PluginThread):
  
         #app['services']['dns'].lookup()
  
+    # This is a remnant of PyDNS/MyMDS, and will be removed soon
     def dnslookup(self, value, key, qdict) :
         print 'dnslookup:', value, key, qdict
         if value[u"map"][key].has_key(u"ns") : 
