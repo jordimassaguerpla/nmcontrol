@@ -11,7 +11,8 @@ On the first start NMControl will generate various configuration files which can
 
 
 ## Prerequisites
-Fetching data from an API server or as an SPV client is in development but for now a Namecoin client needs to run and have finished downloading the blockchain. The Namecoin client datadir (= configuration folder) needs to be in the default location. Also you need to create a `namecoin.conf` file in the Namecoin config folder like this:
+Fetching data from an API server or as an SPV client is in development but for now a Namecoin client needs to run and have finished downloading the blockchain. The Namecoin client datadir (= configuration folder) needs to be in the default location. Also you need to create a `namecoin.conf` file in the Namecoin config folder (with a custom password) like below. Restart the client afterwards.  
+
 ```
     # server=1 tells Namecoin Core GUI to accept JSON-RPC commands.
     # By default, only RPC connections from localhost (the local system) are allowed.
@@ -76,7 +77,7 @@ Unfortunately we currently need to be started privileged with sudo so that we ca
 Point your primary system DNS to 127.0.0.1 (leave the secondary empty). This will redirect ALL your DNS requests to NMControl so you should to tell NMControl how to handle things as follows.  
 In `%appdata%/Nmcontrol/conf/service-dns.conf`:  
 set `disable_standard_lookups` to 0 (and make sure there is no semicolon ";" in front)  
-optional: set `resolver` to your favorite DNS server if you don't like the Google default ones. (often this is a router IP address, e.g. 192.168.0.1)  
+optional: set `resolver` to your favorite DNS server if you don't like the Google default ones. (often this is a router IP address, e.g. 192.168.0.1). ; There has to be a comma at the end!  
 Restart NMControl  
 You can test on the command line like this: `nslookup namecoin.org 127.0.0.1` or `nslookup nx.bit 127.0.0.1`.  
   
