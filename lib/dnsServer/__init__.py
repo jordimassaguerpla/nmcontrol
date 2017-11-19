@@ -34,6 +34,7 @@ import signal
 import getopt
 import traceback
 import threading
+import types
 
 from utils import *
 from common import *
@@ -189,10 +190,16 @@ def format_question(question, qtype, qclass):
     return q
 
 def format_resource(resource, question):
+    if type(resource) == types.DictType:
+        tmp_r = resource
+    if type(resource) == types.ListType:
+        if len(resource) != 1:
+          raise Exception("Resource has more than one element and don't know what to do", resource)
+        tmp_r = resource[0]
     r = ''
     r += labels2str(question)
-    r += struct.pack("!HHIH", resource['qtype'], resource['qclass'], resource['ttl'], len(resource['rdata']))
-    r += resource['rdata']
+    r += struct.pack("!HHIH", tmp_r['qtype'], tmp_r['qclass'], tmp_r['ttl'], len(tmp_r['rdata']))
+    r += tmp_r['rdata']
     return r
 
 #def read_config():

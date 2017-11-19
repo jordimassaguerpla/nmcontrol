@@ -102,45 +102,48 @@ class Source(object):
         if domain.endswith(".bit") or domain.endswith(".tor") :
             #response = listdns.lookup(self.sp, {"query":query, "domain":domain, "qtype":qtype, "qclass":qclass, "src_addr":src_addr})
             #response = self.sp.lookup({"query":query, "domain":domain, "qtype":qtype, "qclass":qclass, "src_addr":src_addr})
-            response = answers
             results = []
-            if type(response) == types.DictType :
-                tempresults = {"qtype":response["type"], "qclass":response["class"], "ttl":response["ttl"]}
-                if response["type"] == 1 :
-                    #if answers == [] :
-                    #    return self.get_response(query, domain, 5, qclass, src_addr)
-                    tempresults["rdata"] = struct.pack("!I", ipstr2int(response["data"]))
-                elif response["type"] == 2 or response["type"] == 5:
-                    tempresults["rdata"] = labels2str(response["data"].split("."))
-                elif response["type"] == 16 :
-                    tempresults["rdata"] = labels2str(response["data"])
-                elif response["type"] == 15 :
-                    tempresult = struct.pack("!H", response["data"][0])
-                    tempresult += labels2str(response["data"][1].split("."))
-                    tempresults["rdata"] = tempresult
-                elif response["type"] == 28 :
-                    tempresults["rdata"] = response["data"]
-                elif response["type"] == 52 :
-                    tempresult = '\x03\x00'
-                    tempresult += chr(int(response["data"][0][0]))
-                    tempresult += bytearray.fromhex(response["data"][0][1])
-                    tempresults["rdata"] = tempresult
-                #else : return 3, []
-                results.append(tempresults)
-                return 0, results
-            if type(response) == types.StringType :
-                if self.isIP(response) :
-                    return 0, [{"qtype":1, "qclass":qclass, "ttl":300, "rdata":struct.pack("!I", ipstr2int(response))}]
-            return 3, []
-            #if query not in self._answers:
-                #return 3, []
-            #if qtype in self._answers[query]:
-            #if domain == "sonicrules.bit":
-            #    results = [{'qtype': 1, 'qclass':qclass, 'ttl': 300, 'rdata': struct.pack("!I", ipstr2int(self.reqobj.req("sonicrules.org", qtype=1).answers[0]["data"]))}]
-            #    return 0, results
-            #elif qtype == 1:
-                # if they asked for an A record and we didn't find one, check for a CNAME
-                #return self.get_response(query, domain, 5, qclass, src_addr)
+            for response in answers:
+                print "response", response
+                print "type", type(response)
+                if type(response) == types.DictType:
+                    print "dictype"
+                    tempresults = {"qtype":response["type"], "qclass":response["class"], "ttl":response["ttl"]}
+                    if response["type"] == 1 :
+                        #if answers == [] :
+                        #    return self.get_response(query, domain, 5, qclass, src_addr)
+                        tempresults["rdata"] = struct.pack("!I", ipstr2int(response["data"]))
+                    elif response["type"] == 2 or response["type"] == 5:
+                        tempresults["rdata"] = labels2str(response["data"].split("."))
+                    elif response["type"] == 16 :
+                        tempresults["rdata"] = labels2str(response["data"])
+                    elif response["type"] == 15 :
+                        tempresult = struct.pack("!H", response["data"][0])
+                        tempresult += labels2str(response["data"][1].split("."))
+                        tempresults["rdata"] = tempresult
+                    elif response["type"] == 28 :
+                        tempresults["rdata"] = response["data"]
+                    elif response["type"] == 52 :
+                        tempresult = '\x03\x00'
+                        tempresult += chr(int(response["data"][0][0]))
+                        tempresult += bytearray.fromhex(response["data"][0][1])
+                        tempresults["rdata"] = tempresult
+                    #else : return 3, []
+                    results.append(tempresults)
+                if type(response) == types.StringType or type(response) == types.UnicodeType :
+                    print "string type"
+                    if self.isIP(response) :
+                        results.append([{"qtype":1, "qclass":qclass, "ttl":300, "rdata":struct.pack("!I", ipstr2int(response))}])
+                #if query not in self._answers:
+                    #return 3, []
+                #if qtype in self._answers[query]:
+                #if domain == "sonicrules.bit":
+                #    results = [{'qtype': 1, 'qclass':qclass, 'ttl': 300, 'rdata': struct.pack("!I", ipstr2int(self.reqobj.req("sonicrules.org", qtype=1).answers[0]["data"]))}]
+                #    return 0, results
+                #elif qtype == 1:
+                    # if they asked for an A record and we didn't find one, check for a CNAME
+                    #return self.get_response(query, domain, 5, qclass, src_addr)
+            return 0, results
         else:
             #server = self.servers[random.randrange(0, len(self.servers)-1)]
             #answers = self.reqobj.req(name=domain, qtype=qtype, server=server).answers

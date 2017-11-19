@@ -227,7 +227,7 @@ class pluginNamespaceDomain(plugin.PluginThread):
             answers = app['plugins']['dns'].getIp4(qdict["domain"])
             if answers != '[]':
                 nameData = json.loads(answers)
-                answers = str(nameData[0])
+                answers = nameData
                 #did we get an IP address or nothing?
                 if answers:
                     return answers
@@ -237,7 +237,7 @@ class pluginNamespaceDomain(plugin.PluginThread):
             answers = app['plugins']['dns'].getIp6(qdict["domain"])
             if answers != '[]':
                 nameData = json.loads(answers)
-                answers = str(nameData[0])
+                answers = nameData
                 #did we get an IP address or nothing?
                 if answers:
                     return answers
@@ -247,7 +247,7 @@ class pluginNamespaceDomain(plugin.PluginThread):
             protocol = qdict["domain"].split(".")[1][1:]
             answers = app['plugins']['dns'].getTlsFingerprint(qdict["domain"], protocol, port)
             answers = json.loads(answers)
-            return {"type":52, "class":1, "ttl":300, "data":answers}
+            return [{"type":52, "class":1, "ttl":300, "data":answers}]
         return
 
     def _torLookup(self,qdict):
@@ -255,7 +255,7 @@ class pluginNamespaceDomain(plugin.PluginThread):
         answers = app['plugins']['dns'].getOnion(qdict["domain"])
         if answers != '[]':
             nameData = json.loads(answers)
-            answers = str(nameData[0])
+            answers = nameData
             #did we get an IP address or nothing?
             if answers:
                 #if TXT record
